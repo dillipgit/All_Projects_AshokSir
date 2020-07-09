@@ -1,0 +1,27 @@
+server:
+       port: 8083
+       
+
+#connection properties
+spring:
+       datasource:
+                  username: PHNBK_LOCAL
+                  password: abc_123
+                  url: jdbc:oracle:thin:@localhost:1521:xe
+                  driver-class-name: oracle.jdbc.driver.OracleDriver
+                  
+                  
+       mvc:
+         view:
+           prefix: /WEB-INF/views/
+           suffix: .jsp
+          
+
+#jpa properties
+       jpa:
+           show-sql: true
+           database-platform: org.hibernate.dialect.Oracle10gDialect
+       
+       
+       
+   
