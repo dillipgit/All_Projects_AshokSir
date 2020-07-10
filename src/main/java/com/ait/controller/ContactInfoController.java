@@ -50,7 +50,6 @@ public class ContactInfoController {
 		
 		Contact contact = new Contact();
 		model.addAttribute("contact", contact);
-	    // return "viewContacts";
 		 return "contactInfo";
 		
 	}
