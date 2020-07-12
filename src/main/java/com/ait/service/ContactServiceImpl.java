@@ -10,51 +10,84 @@ import org.springframework.stereotype.Service;
 
 import com.ait.bind.Contact;
 import com.ait.entity.ContactEntity;
+import com.ait.exception.PhoneBookExceptionHandling;
 import com.ait.repository.IContactRepository;
 
 @Service
-public class ContactServiceImpl implements IContactService{
-	
+public class ContactServiceImpl implements IContactService {
+
 	@Autowired
 	private IContactRepository repo;
 
 	@Override
 	public Boolean saveContact(Contact contact) {
-		ContactEntity entity = new ContactEntity();
-		BeanUtils.copyProperties(contact, entity);
-		repo.save(entity);
-		return entity.getContactId() != null;
+		Boolean isSave = false;
+		try {
+
+			ContactEntity entity = new ContactEntity();
+			BeanUtils.copyProperties(contact, entity);
+			repo.save(entity);
+			isSave = true;
+		} catch (Exception e) {
+			throw new PhoneBookExceptionHandling();
+		}
+
+		return isSave;
 	}
 
 	@Override
 	public List<Contact> getAllContacts() {
-		List<ContactEntity> findAll = repo.findAll();
-		
-		return findAll.stream().map(entity->{
-			Contact contact = new Contact();
-			BeanUtils.copyProperties(entity, contact);
-			return contact;
-		}).collect(Collectors.toList());
-	
+
+		List<Contact> listContact = null;
+		try {
+			List<ContactEntity> findAll = repo.findAll();
+
+			listContact = findAll.stream().map(entity -> {
+				Contact contact = new Contact();
+				BeanUtils.copyProperties(entity, contact);
+				return contact;
+			}).collect(Collectors.toList());
+
+		}
+
+		catch (Exception e) {
+			throw new PhoneBookExceptionHandling();
+		}
+		return listContact;
+
 	}
 
 	@Override
 	public Contact getContactById(Integer id) {
-		Optional<ContactEntity> findById = repo.findById(id);
-		if(findById.isPresent()) {
-			ContactEntity entity = findById.get();
-			Contact c = new Contact();
-			BeanUtils.copyProperties(entity,c);
-			return c;
+		Contact c = null;
+		try {
+			
+			Optional<ContactEntity> findById = repo.findById(id);
+			if (findById.isPresent()) {
+				ContactEntity entity = findById.get();
+				c = new Contact();
+				BeanUtils.copyProperties(entity, c);
+				
+			}
 		}
-		return null;
+		catch (Exception e) {
+          throw new PhoneBookExceptionHandling();
+		}
+		
+		return c;
 	}
 
 	@Override
 	public Boolean deleteContactById(Integer id) {
-		repo.deleteById(id);
-		return true;
+		Boolean isdelete=false;
+		try {
+			repo.deleteById(id);
+			isdelete = true;
+		}
+		catch (Exception e) {
+			throw new PhoneBookExceptionHandling();
+		}
+		return isdelete;
 	}
 
-	 
 }
